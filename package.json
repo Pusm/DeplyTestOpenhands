@@ -1,0 +1,15 @@
+{
+  "name": "openhands-heroku-feature-branch-test",
+  "version": "1.0.0",
+  "description": "Dynamic test site from feature branch for OpenHands deployment on Heroku",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

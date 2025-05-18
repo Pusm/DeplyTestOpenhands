@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FastAPI + Jinja2 App</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Welcome to FastAPI + Jinja2</h1>
+    <button onclick="fetchHello()">Click to fetch API</button>
+    <script>
+        async function fetchHello() {
+            const response = await fetch('/api/hello');
+            const data = await response.json();
+            alert(data.message);
+        }
+    </script>
+</body>
+</html>

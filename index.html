@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenHands デプロイテストサイト</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; background-color: #f4f4f4; color: #333; text-align: center; }
+        .container { max-width: 700px; margin: auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { color: #0056b3; }
+        p { font-size: 1.1em; }
+        .timestamp { background-color: #e9ecef; padding: 10px; border-radius: 4px; display: inline-block; margin-top: 20px; }
+        #datetime { font-weight: bold; color: #003979; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ようこそ！ OpenHands テストサイトへ</h1>
+        <p>このページは、OpenHandsによってリポジトリに準備され、デプロイテストに使用されることを目的としています。</p>
+        <p>ファイルの最終準備時刻 (UTC):</p>
+        <div class="timestamp">
+            <span id="datetime"></span>
+        </div>
+    </div>
+    <script>
+        document.getElementById('datetime').textContent = new Date().toISOString();
+    </script>
+</body>
+</html>

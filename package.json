@@ -1,0 +1,24 @@
+{
+  "name": "deplytestopenhands",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "gh-pages -d ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pusm/DeplyTestOpenhands.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pusm/DeplyTestOpenhands/issues"
+  },
+  "homepage": "https://github.com/Pusm/DeplyTestOpenhands#readme",
+  "description": "",
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}

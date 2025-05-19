@@ -19,15 +19,17 @@ jobs:
       - name: Set up Fly.io CLI
         uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - name: Generate app name
+      - name: Generate unique app name
         id: app-name
         run: |
           BRANCH_SLUG=$(echo '${{ github.head_ref || github.ref_name }}' | \
             sed 's/[^a-z0-9-]/-/g' | \
             sed 's/github/gh/g' | \
             sed 's/flyio/fly/g')
-          echo "FLY_APP=deply-test-${BRANCH_SLUG}" >> $GITHUB_ENV
-          echo "Generated app name: deply-test-${BRANCH_SLUG}"
+          TIMESTAMP=$(date +%s | cut -c 6-10)
+          HASH=$(echo $BRANCH_SLUG | md5sum | cut -c1-4)
+          echo "FLY_APP=deply-test-${BRANCH_SLUG}-${TIMESTAMP}-${HASH}" >> $GITHUB_ENV
+          echo "Generated app name: deply-test-${BRANCH_SLUG}-${TIMESTAMP}-${HASH}"
 
       - name: Deploy to Fly.io
         run: |

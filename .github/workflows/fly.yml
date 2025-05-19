@@ -1,0 +1,30 @@
+name: Fly Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  deploy:
+    name: Deploy app
+    runs-on: ubuntu-latest
+    concurrency: deploy-group
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: |
+          if flyctl apps list | grep -q "$FLY_APP"; then
+            flyctl deploy --remote-only --app "$FLY_APP"
+          else
+            flyctl launch \
+              --name "$FLY_APP" \
+              --org "personal" \
+              --region nrt \
+              --no-deploy \
+              --now \
+              --yes
+            sleep 10
+            flyctl deploy --remote-only --app "$FLY_APP"
+          fi
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          FLY_APP: "fly-app-760"  # 実際のアプリ名に変更してください

@@ -1,0 +1,57 @@
+name: Deploy to Fly.io (Branch-based)
+
+on:
+  push:
+    branches: 
+      - main
+      - '!gh-pages'
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy to Fly.io
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Fly.io CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Define Fly App Name
+        id: app-name
+        run: |
+          BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}
+          SLUG=$(echo "$BRANCH" | tr '/' '-' | tr -cd 'a-zA-Z0-9-')
+          
+          if [ "$SLUG" = "main" ]; then
+            echo "FLY_APP=deply-test-openhands" >> $GITHUB_ENV
+            echo "APP_TYPE=production" >> $GITHUB_ENV
+          else
+            TIMESTAMP=$(date +%s | cut -c6-10)
+            echo "FLY_APP=deply-test-openhands-${SLUG}-${TIMESTAMP}" >> $GITHUB_ENV
+            echo "APP_TYPE=preview" >> $GITHUB_ENV
+          fi
+          echo "Generated app name: $FLY_APP"
+
+      - name: Deploy to Fly.io
+        run: |
+          if flyctl apps list | grep -q "$FLY_APP"; then
+            echo "🔄 App exists, deploying updates..."
+            flyctl deploy --remote-only --app "$FLY_APP"
+          else
+            echo "🆕 Creating new app..."
+            flyctl launch --name "$FLY_APP" --region nrt --no-deploy --now
+            echo "⏳ Waiting for app initialization..."
+            sleep 15
+            echo "🚀 Deploying app..."
+            flyctl deploy --remote-only --app "$FLY_APP"
+            if [ "$APP_TYPE" = "preview" ]; then
+              echo "🔗 Preview URL: https://$FLY_APP.fly.dev"
+            fi
+          fi
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

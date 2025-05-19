@@ -2,8 +2,9 @@ name: Deploy to Fly.io (Branch-based)
 
 on:
   push:
-    branches: [main]
-    branches-ignore: ['gh-pages']
+    branches: 
+      - main
+      - '!gh-pages'
   pull_request:
     branches: [main]
 

@@ -9,6 +9,9 @@ primary_region = 'lax'
 [build]
 builder = "docker"
 dockerfile = "Dockerfile"
+build_args = {}
+build_command = "docker build -t ${FLY_APP_NAME} ."
+disable_buildpacks = true  # 明示的にBuildpacksを無効化
 
 [http_service]
   internal_port = 8080

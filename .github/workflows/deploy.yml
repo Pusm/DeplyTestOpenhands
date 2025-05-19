@@ -22,9 +22,12 @@ jobs:
       - name: Generate app name
         id: app-name
         run: |
-          BRANCH_SLUG=$(echo '${{ github.head_ref || github.ref_name }}' | sed 's/[^a-z0-9-]/-/g')
-          echo "FLY_APP=deply-test-openhands-${BRANCH_SLUG}" >> $GITHUB_ENV
-          echo "Generated app name: deply-test-openhands-${BRANCH_SLUG}"
+          BRANCH_SLUG=$(echo '${{ github.head_ref || github.ref_name }}' | \
+            sed 's/[^a-z0-9-]/-/g' | \
+            sed 's/github/gh/g' | \
+            sed 's/flyio/fly/g')
+          echo "FLY_APP=deply-test-${BRANCH_SLUG}" >> $GITHUB_ENV
+          echo "Generated app name: deply-test-${BRANCH_SLUG}"
 
       - name: Deploy to Fly.io
         run: |

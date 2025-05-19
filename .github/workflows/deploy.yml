@@ -1,0 +1,40 @@
+name: Deploy to Fly.io (Branch-based)
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches-ignore: [main]
+
+jobs:
+  deploy:
+    name: Deploy branch preview
+    runs-on: ubuntu-latest
+    environment: preview
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Fly.io CLI
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Generate app name
+        id: app-name
+        run: |
+          BRANCH_SLUG=$(echo '${{ github.head_ref || github.ref_name }}' | sed 's/[^a-z0-9-]/-/g')
+          echo "FLY_APP=deply-test-openhands-${BRANCH_SLUG}" >> $GITHUB_ENV
+          echo "Generated app name: deply-test-openhands-${BRANCH_SLUG}"
+
+      - name: Deploy to Fly.io
+        run: |
+          if flyctl apps list | grep -q $FLY_APP; then
+            echo "App exists, deploying..."
+            flyctl deploy --remote-only --app $FLY_APP
+          else
+            echo "Creating new app..."
+            flyctl launch --name $FLY_APP --region nrt --no-deploy --now
+            flyctl deploy --remote-only --app $FLY_APP
+          fi
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

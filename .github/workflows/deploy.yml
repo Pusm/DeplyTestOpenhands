@@ -44,7 +44,7 @@ jobs:
             flyctl deploy --remote-only --app "$FLY_APP"
           else
             echo "🆕 Creating new app..."
-            flyctl launch --name "$FLY_APP" --org Pusm --region nrt --no-deploy --now
+            flyctl launch --name "$FLY_APP" --org personal --region nrt --no-deploy --now
             echo "⏳ Waiting for app initialization..."
             sleep 15
             echo "🚀 Deploying app..."

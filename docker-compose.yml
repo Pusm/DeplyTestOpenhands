@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - db_data:/data/db
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
+
+  db:
+    image: sqlite
+    volumes:
+      - db_data:/data/db
+    restart: always
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    command: pytest tests/
+    volumes:
+      - ./backend:/app
+      - ./tests:/tests
+    depends_on:
+      - db
+
+volumes:
+  db_data:

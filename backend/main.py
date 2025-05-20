@@ -16,7 +16,7 @@ app.add_middleware(
 )
 
 # Database setup
-DATABASE_URL = os.getenv("DATABASE_URL", "sql_app.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "test.db")
 
 class Item(BaseModel):
     name: str

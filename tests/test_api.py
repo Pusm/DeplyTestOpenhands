@@ -91,3 +91,62 @@ def test_create_item_with_invalid_data(client):
     )
     assert response.status_code == 422
     assert "name" in response.json()["detail"][0]["loc"]
+
+def test_database_transaction_rollback(client):
+    # Test that failed transaction doesn't persist data
+    try:
+        # This will fail due to missing name
+        client.post("/items/", json={"description": "Should rollback"})
+    except:
+        pass
+    
+    # Verify no items were created
+    response = client.get("/items/")
+    assert len(response.json()["items"]) == 0
+
+def test_concurrent_database_access(client):
+    import threading
+    
+    def create_item(name):
+        response = client.post(
+            "/items/",
+            json={"name": name, "description": f"Description for {name}"}
+        )
+        assert response.status_code == 200
+    
+    threads = []
+    for i in range(5):
+        t = threading.Thread(target=create_item, args=(f"Item-{i}",))
+        threads.append(t)
+        t.start()
+    
+    for t in threads:
+        t.join()
+    
+    response = client.get("/items/")
+    assert len(response.json()["items"]) == 5
+
+def test_large_data_volume(client):
+    # Test inserting and retrieving large amount of data
+    for i in range(100):
+        response = client.post(
+            "/items/",
+            json={"name": f"Item {i}", "description": "X"*1000}
+        )
+        assert response.status_code == 200
+    
+    response = client.get("/items/")
+    assert len(response.json()["items"]) == 100
+    assert len(response.json()["items"][0]["description"]) == 1000
+
+def test_special_characters(client):
+    # Test handling of special characters
+    special_text = "テスト 漢字 !@#$%^&*()"
+    response = client.post(
+        "/items/",
+        json={"name": special_text, "description": special_text}
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["name"] == special_text
+    assert data["description"] == special_text

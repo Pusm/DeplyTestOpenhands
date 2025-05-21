@@ -3,27 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import sqlite3
 import os
-
-app = FastAPI()
-
-# CORS設定
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+from contextlib import asynccontextmanager
 
 # Database setup
 DATABASE_URL = os.getenv("DATABASE_URL", "sql_app.db")
 
-class Item(BaseModel):
-    name: str
-    description: str = None
-
-@app.on_event("startup")
-def startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Initialize database
     if not os.path.exists(DATABASE_URL):
         open(DATABASE_URL, "w").close()
     
@@ -38,6 +25,26 @@ def startup():
     """)
     conn.commit()
     conn.close()
+    
+    yield
+    
+    # Shutdown: Cleanup (if needed)
+    pass
+
+app = FastAPI(lifespan=lifespan)
+
+# CORS設定
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
 
 @app.post("/items/")
 async def create_item(item: Item):
@@ -54,7 +61,7 @@ async def create_item(item: Item):
     conn.commit()
     item_id = cursor.lastrowid
     conn.close()
-    return {"id": item_id, **item.dict()}
+    return {"id": item_id, **item.model_dump()}
 
 @app.get("/items/")
 async def read_items():

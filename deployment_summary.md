@@ -3,18 +3,18 @@
 ## Running Services
 
 ### Backend Service
-- **URL**: http://localhost:8888
-- **Process**: uvicorn main:app --host 0.0.0.0 --port 8888
+- **URL**: http://localhost:52033
+- **Process**: uvicorn main:app --host 0.0.0.0 --port 52033
 - **Environment Variables**:
   - DATABASE_URL=/workspace/DeplyTestOpenhands/data/db/sql_app.db
-  - PORT=8888
+  - PORT=52033
 
 ### Frontend Service
-- **URL**: http://localhost:3333
-- **Process**: npm run dev -- --port 3333
+- **URL**: http://localhost:57851
+- **Process**: npm run dev -- --port 57851
 - **Environment Variables**:
-  - PORT=3333
-  - NEXT_PUBLIC_API_URL=http://localhost:8888
+  - PORT=57851
+  - NEXT_PUBLIC_API_URL=http://localhost:52033
 
 ## Test Results
 All tests have passed successfully. The test suite includes:
@@ -35,14 +35,14 @@ The following API endpoints are available:
 cd /workspace/DeplyTestOpenhands/backend
 pip install -r requirements.txt
 mkdir -p /workspace/DeplyTestOpenhands/data/db
-DATABASE_URL=/workspace/DeplyTestOpenhands/data/db/sql_app.db PORT=8888 uvicorn main:app --host 0.0.0.0 --port 8888
+DATABASE_URL=/workspace/DeplyTestOpenhands/data/db/sql_app.db PORT=52033 uvicorn main:app --host 0.0.0.0 --port 52033
 
 # Setup frontend
 cd /workspace/DeplyTestOpenhands/frontend
 npm install
 mkdir -p /workspace/DeplyTestOpenhands/frontend/pages
 # Created index.js file
-PORT=3333 NEXT_PUBLIC_API_URL=http://localhost:8888 npm run dev -- --port 3333
+PORT=57851 NEXT_PUBLIC_API_URL=http://localhost:52033 npm run dev -- --port 57851
 
 # Run tests
 cd /workspace/DeplyTestOpenhands

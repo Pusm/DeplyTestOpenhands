@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     ports:
-      - "50954:8888"
+      - "52033:8888"
     volumes:
       - ./backend:/app
       - db_data:/data/db
@@ -14,19 +14,21 @@ services:
       - db
     environment:
       - PORT=8888
+      - DATABASE_URL=/data/db/sql_app.db
 
   frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
     ports:
-      - "59208:3333"
+      - "57851:3333"
     volumes:
       - ./frontend:/app
     depends_on:
       - backend
     environment:
       - PORT=3333
+      - NEXT_PUBLIC_API_URL=http://localhost:52033
 
   db:
     image: sqlite

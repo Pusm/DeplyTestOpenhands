@@ -6,23 +6,27 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     ports:
-      - "52802:8000"
+      - "50954:8888"
     volumes:
       - ./backend:/app
       - db_data:/data/db
     depends_on:
       - db
+    environment:
+      - PORT=8888
 
   frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
     ports:
-      - "56686:3000"
+      - "59208:3333"
     volumes:
       - ./frontend:/app
     depends_on:
       - backend
+    environment:
+      - PORT=3333
 
   db:
     image: sqlite
